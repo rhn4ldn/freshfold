@@ -1,8 +1,8 @@
-# FreshFold Laundry
+# Star Clean Laundry
 
-A responsive single-page website for a fictional laundry service, built with semantic HTML, hand-written CSS, and vanilla JavaScript. No frameworks, no build step.
+A responsive single-page website for Star Clean Laundry (Sumenep), built with semantic HTML, hand-written CSS, and vanilla JavaScript. No frameworks, no build step.
 
-> **Demo project.** Business details, prices, testimonials, photography, and the map location are placeholders. Replace them before accepting real orders.
+> Business details (address: Perum BSA, Jl. Kemuning III No.10 Blok-G, Kolor, Sumenep; WhatsApp 0823398889) are the live details for Star Clean Laundry. Testimonials are examples and should be replaced with verified customer reviews.
 
 ## Features
 
@@ -185,7 +185,7 @@ Modern evergreen Chrome, Edge, Firefox, and Safari. The site uses CSS custom pro
 - The area checker uses a static district list. It does not use GPS or live coverage data.
 - The booking draft is stored only in the current browser on the current device and expires after seven days.
 - Testimonials are fictional and should be replaced with real, permissioned customer feedback.
-- The address, map location, phone number, email, Instagram account, and opening hours are placeholders.
+- The address, map location, WhatsApp number, and pickup/delivery windows are provided by the business. Testimonials are fictional; email, Instagram, and opening hours are not yet confirmed and are configurable in `js/config.js`.
 
 ## Photography credits
 

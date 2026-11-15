@@ -1,9 +1,9 @@
-(function (FreshFold) {
+(function (StarClean) {
   "use strict";
 
-  var config = FreshFold.config;
-  var services = FreshFold.services;
-  var addons = FreshFold.addons;
+  var config = StarClean.config;
+  var services = StarClean.services;
+  var addons = StarClean.addons;
   var toastStack = document.getElementById("toast-stack");
   var menuOpen = false;
   var menuCloseTimer = null;
@@ -61,13 +61,13 @@
     document.querySelectorAll("[data-whatsapp-link]").forEach(function (link) {
       var messageKey = link.getAttribute("data-wa-message") || "generic";
       var message = config.messages[messageKey] || config.messages.generic;
-      link.setAttribute("href", FreshFold.getWhatsAppUrl(message));
+      link.setAttribute("href", StarClean.getWhatsAppUrl(message));
       link.setAttribute("target", "_blank");
       link.setAttribute("rel", "noopener noreferrer");
     });
 
     document.querySelectorAll("[data-email-link]").forEach(function (link) {
-      link.setAttribute("href", FreshFold.getEmailLink());
+      link.setAttribute("href", StarClean.getEmailLink());
     });
 
     document.querySelectorAll("[data-instagram-link]").forEach(function (link) {
@@ -77,7 +77,7 @@
     });
 
     document.querySelectorAll("[data-map-link]").forEach(function (link) {
-      link.setAttribute("href", FreshFold.getMapLink());
+      link.setAttribute("href", StarClean.getMapLink());
     });
 
     var year = byId("year");
@@ -88,8 +88,8 @@
     var mapFrame = byId("map-frame");
     if (mapFrame && !mapFrame.querySelector("iframe")) {
       var iframe = document.createElement("iframe");
-      iframe.src = FreshFold.getMapEmbedUrl();
-      iframe.title = "Peta lokasi studio FreshFold Laundry";
+      iframe.src = StarClean.getMapEmbedUrl();
+      iframe.title = "Peta lokasi studio Star Clean Laundry";
       iframe.loading = "lazy";
       iframe.referrerPolicy = "no-referrer-when-downgrade";
       mapFrame.appendChild(iframe);
@@ -125,33 +125,33 @@
 
   function initPrices() {
     document.querySelectorAll("[data-price]").forEach(function (element) {
-      var service = FreshFold.getService(element.getAttribute("data-price"));
+      var service = StarClean.getService(element.getAttribute("data-price"));
       if (!service) {
         return;
       }
-      element.textContent = (service.showFrom ? "Mulai " : "") + FreshFold.formatRupiah(service.basePrice);
+      element.textContent = (service.showFrom ? "Mulai " : "") + StarClean.formatRupiah(service.basePrice);
     });
 
     document.querySelectorAll("[data-turnaround]").forEach(function (element) {
-      var service = FreshFold.getService(element.getAttribute("data-turnaround"));
+      var service = StarClean.getService(element.getAttribute("data-turnaround"));
       if (service) {
         element.textContent = service.turnaround;
       }
     });
 
     document.querySelectorAll("[data-minimum]").forEach(function (element) {
-      var service = FreshFold.getService(element.getAttribute("data-minimum"));
+      var service = StarClean.getService(element.getAttribute("data-minimum"));
       if (service) {
         element.textContent = service.minLabel;
       }
     });
 
     document.querySelectorAll("[data-delivery-fee]").forEach(function (element) {
-      element.textContent = FreshFold.formatRupiah(config.deliveryFee);
+      element.textContent = StarClean.formatRupiah(config.deliveryFee);
     });
 
     document.querySelectorAll("[data-delivery-free-from]").forEach(function (element) {
-      element.textContent = FreshFold.formatRupiah(config.freeDeliveryFrom);
+      element.textContent = StarClean.formatRupiah(config.freeDeliveryFrom);
     });
   }
 
@@ -170,7 +170,7 @@
         var unit = document.createElement("span");
 
         name.textContent = service.name;
-        rate.textContent = FreshFold.formatRupiah(service.basePrice) + " ";
+        rate.textContent = StarClean.formatRupiah(service.basePrice) + " ";
         unit.className = "unit";
         unit.textContent = "/kg";
         rate.appendChild(unit);
@@ -196,7 +196,7 @@
 
         group.className = "price-item-group";
         heading.textContent = service.name;
-        from.textContent = "mulai " + FreshFold.formatRupiah(service.basePrice);
+        from.textContent = "mulai " + StarClean.formatRupiah(service.basePrice);
         heading.appendChild(from);
 
         service.variants.forEach(function (variant) {
@@ -204,7 +204,7 @@
           var label = document.createElement("span");
           var price = document.createElement("span");
           label.textContent = variant.name;
-          price.textContent = FreshFold.formatRupiah(variant.price);
+          price.textContent = StarClean.formatVariantPrice(variant);
           item.appendChild(label);
           item.appendChild(price);
           list.appendChild(item);
@@ -224,7 +224,7 @@
         var label = document.createElement("span");
         var price = document.createElement("span");
         label.textContent = addon.name;
-        price.textContent = FreshFold.formatRupiah(addon.price);
+        price.textContent = StarClean.formatRupiah(addon.price);
         item.appendChild(label);
         item.appendChild(price);
         addonList.appendChild(item);
@@ -258,7 +258,7 @@
       var availableGroup = document.createElement("optgroup");
       availableGroup.label = "Area layanan";
       var outsideGroup = document.createElement("optgroup");
-      outsideGroup.label = "Di luar area demo";
+      outsideGroup.label = "Di luar area layanan";
 
       config.serviceAreas.forEach(function (area) {
         var option = document.createElement("option");
@@ -303,7 +303,7 @@
           return;
         }
 
-        var available = FreshFold.isAreaAvailable(selected);
+        var available = StarClean.isAreaAvailable(selected);
         result.hidden = false;
         result.classList.toggle("is-unserved", !available);
         result.textContent = "";
@@ -322,10 +322,10 @@
             districtField.value = selected;
           }
         } else {
-          title.textContent = selected + " berada di luar cakupan demo kami.";
+          title.textContent = selected + " berada di luar area layanan kami.";
           copy.textContent = " Kirim pesan kepada kami dan kami akan memeriksa apakah ada pengecualian.";
-          action.href = FreshFold.getWhatsAppUrl(
-            "Halo FreshFold Laundry, apakah penjemputan tersedia di area " + selected + "?"
+          action.href = StarClean.getWhatsAppUrl(
+            "Halo Star Clean Laundry, apakah penjemputan tersedia di area " + selected + "?"
           );
           action.target = "_blank";
           action.rel = "noopener noreferrer";
@@ -366,10 +366,10 @@
 
     var date = byId("pickup-date");
     if (date) {
-      date.min = FreshFold.getMinPickupDate();
-      date.max = FreshFold.getMaxPickupDate();
+      date.min = StarClean.getMinPickupDate();
+      date.max = StarClean.getMaxPickupDate();
       if (!date.value) {
-        date.value = FreshFold.getSuggestedPickupDate();
+        date.value = StarClean.getSuggestedPickupDate();
       }
     }
   }
@@ -652,11 +652,11 @@
       return;
     }
     footerClear.addEventListener("click", function () {
-      document.dispatchEvent(new CustomEvent("freshfold:clear-draft", { detail: { source: "footer" } }));
+      document.dispatchEvent(new CustomEvent("starclean:clear-draft", { detail: { source: "footer" } }));
     });
   }
 
-  FreshFold.ui = {
+  StarClean.ui = {
     showToast: showToast
   };
 
@@ -671,4 +671,4 @@
   initAccordion();
   initReveal();
   initDraftBridge();
-})(window.FreshFold = window.FreshFold || {});
+})(window.StarClean = window.StarClean || {});

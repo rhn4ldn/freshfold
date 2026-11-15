@@ -1,7 +1,7 @@
-﻿(function (FreshFold) {
+(function (StarClean) {
   "use strict";
 
-  var config = FreshFold.config;
+  var config = StarClean.config;
 
   var SERVICES = [
     {
@@ -12,7 +12,7 @@
       unitPlural: "kg",
       minQty: 2,
       minLabel: "2 kg",
-      basePrice: 7000,
+      basePrice: 5000,
       showFrom: false,
       turnaround: "2–3 hari",
       expressEligible: true,
@@ -28,7 +28,7 @@
       unitPlural: "kg",
       minQty: 2,
       minLabel: "2 kg",
-      basePrice: 10000,
+      basePrice: 6000,
       showFrom: false,
       turnaround: "2–3 hari",
       expressEligible: true,
@@ -66,7 +66,7 @@
       unitPlural: "kg",
       minQty: 2,
       minLabel: "2 kg",
-      basePrice: 6000,
+      basePrice: 3000,
       showFrom: false,
       turnaround: "1–2 hari",
       expressEligible: true,
@@ -82,17 +82,37 @@
       unitPlural: "item",
       minQty: 1,
       minLabel: "1 item",
-      basePrice: 15000,
+      basePrice: 5000,
       showFrom: true,
       turnaround: "3–4 hari",
       expressEligible: false,
       expressTurnaround: "",
       description: "Bed cover, selimut, dan set seprai dicuci dengan ruang yang cukup.",
       variants: [
-        { id: "pillowcase-pair", name: "Sepasang Sarung Bantal", price: 15000 },
-        { id: "bed-sheet-set", name: "Set Seprai", price: 30000 },
-        { id: "blanket", name: "Selimut", price: 35000 },
-        { id: "bed-cover", name: "Bed Cover", price: 45000 }
+        { id: "bed-cover-biasa", name: "Bed Cover Biasa", price: 20000 },
+        { id: "bed-cover-besar", name: "Bed Cover Besar", price: 25000 },
+        { id: "selimut-tipis", name: "Selimut Tipis", price: 5000 },
+        { id: "selimut-tebal", name: "Selimut Tebal", price: 20000 }
+      ]
+    },
+    {
+      id: "laundry-boneka",
+      name: "Laundry Boneka",
+      pricingType: "item",
+      unit: "item",
+      unitPlural: "item",
+      minQty: 1,
+      minLabel: "1 item",
+      basePrice: 3000,
+      showFrom: true,
+      turnaround: "Menyesuaikan",
+      expressEligible: false,
+      expressTurnaround: "",
+      description: "Boneka dicuci bersih dan dikeringkan hingga benar-benar kering.",
+      variants: [
+        { id: "boneka-kecil", name: "Boneka Kecil", price: 3000 },
+        { id: "boneka-sedang", name: "Boneka Sedang", price: 5000 },
+        { id: "boneka-besar", name: "Boneka Besar", price: 15000, priceMax: 20000, note: "Harga akhir boneka besar menyesuaikan ukuran dan akan dikonfirmasi oleh admin." }
       ]
     }
   ];
@@ -179,6 +199,16 @@
     return quantityFormatter.format(number);
   }
 
+  function formatVariantPrice(variant) {
+    if (!variant) {
+      return "";
+    }
+    if (variant.priceMax && variant.priceMax > variant.price) {
+      return formatRupiah(variant.price) + "–" + formatRupiah(variant.priceMax);
+    }
+    return formatRupiah(variant.price);
+  }
+
   function calculateQuote(input) {
     var service = getService(input && input.serviceId);
     if (!service) {
@@ -234,6 +264,8 @@
       variant: variant,
       variantId: variant ? variant.id : "",
       variantName: variant ? variant.name : "",
+      variantPriceLabel: variant ? formatVariantPrice(variant) : "",
+      variantNote: variant && variant.note ? variant.note : "",
       pricingType: service.pricingType,
       unit: service.unit,
       unitPlural: service.unitPlural,
@@ -268,7 +300,7 @@
   }
 
   function getMapLink() {
-    return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(config.addressQuery);
+    return config.mapUrl || ("https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(config.addressQuery));
   }
 
   function getMapEmbedUrl() {
@@ -290,7 +322,7 @@
 
   function createReference(prefix) {
     var code = Math.floor(1000 + Math.random() * 9000);
-    return "FF-" + (prefix || "EST") + "-" + code;
+    return "SC-" + (prefix || "EST") + "-" + code;
   }
 
   function pad(value) {
@@ -389,28 +421,29 @@
     return false;
   }
 
-  FreshFold.services = SERVICES;
-  FreshFold.addons = ADDONS;
-  FreshFold.getService = getService;
-  FreshFold.getVariant = getVariant;
-  FreshFold.getAddon = getAddon;
-  FreshFold.formatRupiah = formatRupiah;
-  FreshFold.formatQuantity = formatQuantity;
-  FreshFold.calculateQuote = calculateQuote;
-  FreshFold.getWhatsAppUrl = getWhatsAppUrl;
-  FreshFold.getMapLink = getMapLink;
-  FreshFold.getMapEmbedUrl = getMapEmbedUrl;
-  FreshFold.getEmailLink = getEmailLink;
-  FreshFold.escapeHTML = escapeHTML;
-  FreshFold.createReference = createReference;
-  FreshFold.toISODate = toISODate;
-  FreshFold.parseISODate = parseISODate;
-  FreshFold.addDaysISO = addDaysISO;
-  FreshFold.isClosedDate = isClosedDate;
-  FreshFold.getMinPickupDate = getMinPickupDate;
-  FreshFold.getMaxPickupDate = getMaxPickupDate;
-  FreshFold.getSuggestedPickupDate = getSuggestedPickupDate;
-  FreshFold.validatePickupDate = validatePickupDate;
-  FreshFold.formatDateID = formatDateID;
-  FreshFold.isAreaAvailable = isAreaAvailable;
-})(window.FreshFold = window.FreshFold || {});
+  StarClean.services = SERVICES;
+  StarClean.addons = ADDONS;
+  StarClean.getService = getService;
+  StarClean.getVariant = getVariant;
+  StarClean.getAddon = getAddon;
+  StarClean.formatRupiah = formatRupiah;
+  StarClean.formatQuantity = formatQuantity;
+  StarClean.formatVariantPrice = formatVariantPrice;
+  StarClean.calculateQuote = calculateQuote;
+  StarClean.getWhatsAppUrl = getWhatsAppUrl;
+  StarClean.getMapLink = getMapLink;
+  StarClean.getMapEmbedUrl = getMapEmbedUrl;
+  StarClean.getEmailLink = getEmailLink;
+  StarClean.escapeHTML = escapeHTML;
+  StarClean.createReference = createReference;
+  StarClean.toISODate = toISODate;
+  StarClean.parseISODate = parseISODate;
+  StarClean.addDaysISO = addDaysISO;
+  StarClean.isClosedDate = isClosedDate;
+  StarClean.getMinPickupDate = getMinPickupDate;
+  StarClean.getMaxPickupDate = getMaxPickupDate;
+  StarClean.getSuggestedPickupDate = getSuggestedPickupDate;
+  StarClean.validatePickupDate = validatePickupDate;
+  StarClean.formatDateID = formatDateID;
+  StarClean.isAreaAvailable = isAreaAvailable;
+})(window.StarClean = window.StarClean || {});

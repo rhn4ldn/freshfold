@@ -1,4 +1,4 @@
-(function (FreshFold) {
+(function (StarClean) {
   "use strict";
 
   var form = document.getElementById("calc-form");
@@ -28,7 +28,7 @@
   var liveRegion = document.getElementById("calc-live");
   var continueButton = document.getElementById("calc-continue");
   var resetButton = document.getElementById("calc-reset");
-  var reference = FreshFold.createReference("EST");
+  var reference = StarClean.createReference("EST");
 
   function makeOption(value, label) {
     var option = document.createElement("option");
@@ -39,12 +39,12 @@
 
   function populateServices() {
     serviceSelect.textContent = "";
-    FreshFold.services.forEach(function (service) {
+    StarClean.services.forEach(function (service) {
       var prefix = service.showFrom ? "mulai " : "";
       serviceSelect.appendChild(
         makeOption(
           service.id,
-          service.name + " · " + prefix + FreshFold.formatRupiah(service.basePrice) + "/" + service.unit
+          service.name + " · " + prefix + StarClean.formatRupiah(service.basePrice) + "/" + service.unit
         )
       );
     });
@@ -52,7 +52,7 @@
 
   function populateAddons() {
     addonContainer.textContent = "";
-    FreshFold.addons.forEach(function (addon) {
+    StarClean.addons.forEach(function (addon) {
       var label = document.createElement("label");
       var input = document.createElement("input");
       var box = document.createElement("span");
@@ -73,7 +73,7 @@
       name.textContent = addon.name;
       description.textContent = addon.description;
       price.className = "check-option__price";
-      price.textContent = "+" + FreshFold.formatRupiah(addon.price);
+      price.textContent = "+" + StarClean.formatRupiah(addon.price);
 
       copy.appendChild(name);
       copy.appendChild(description);
@@ -94,7 +94,7 @@
     }
 
     service.variants.forEach(function (variant) {
-      variantSelect.appendChild(makeOption(variant.id, variant.name + " · " + FreshFold.formatRupiah(variant.price)));
+      variantSelect.appendChild(makeOption(variant.id, variant.name + " · " + StarClean.formatVariantPrice(variant)));
     });
 
     variantField.hidden = false;
@@ -128,7 +128,7 @@
 
   function applyService(serviceId, options) {
     var settings = options || {};
-    var service = FreshFold.getService(serviceId) || FreshFold.services[0];
+    var service = StarClean.getService(serviceId) || StarClean.services[0];
     serviceSelect.value = service.id;
 
     populateVariants(service, settings.variantId || variantSelect.value);
@@ -164,7 +164,7 @@
     if (turnaroundHint) {
       turnaroundHint.textContent = service.expressEligible
         ? "Express menambah 50% dan menargetkan 24 jam, tergantung kapasitas."
-        : "Express tidak tersedia untuk bedding dan item berat.";
+        : "Express tidak tersedia untuk item besar seperti bed cover dan boneka.";
     }
 
     setQuantityError("");
@@ -181,7 +181,7 @@
   }
 
   function renderReceipt() {
-    var quote = FreshFold.calculateQuote(readState());
+    var quote = StarClean.calculateQuote(readState());
     if (!quote) {
       return;
     }
@@ -208,7 +208,7 @@
         " (" +
         quote.quantityLabel +
         ")";
-      serviceAmount.textContent = FreshFold.formatRupiah(quote.serviceSubtotal);
+      serviceAmount.textContent = StarClean.formatRupiah(quote.serviceSubtotal);
       serviceLine.appendChild(serviceLabel);
       serviceLine.appendChild(serviceAmount);
       receiptLines.appendChild(serviceLine);
@@ -218,7 +218,7 @@
         var expressLabel = document.createElement("span");
         var expressAmount = document.createElement("span");
         expressLabel.textContent = "Layanan Express (+50%)";
-        expressAmount.textContent = FreshFold.formatRupiah(quote.expressFee);
+        expressAmount.textContent = StarClean.formatRupiah(quote.expressFee);
         expressLine.appendChild(expressLabel);
         expressLine.appendChild(expressAmount);
         receiptLines.appendChild(expressLine);
@@ -229,7 +229,7 @@
         var addonLabel = document.createElement("span");
         var addonAmount = document.createElement("span");
         addonLabel.textContent = addon.name;
-        addonAmount.textContent = FreshFold.formatRupiah(addon.price);
+        addonAmount.textContent = StarClean.formatRupiah(addon.price);
         addonLine.appendChild(addonLabel);
         addonLine.appendChild(addonAmount);
         receiptLines.appendChild(addonLine);
@@ -239,7 +239,7 @@
       var deliveryLabel = document.createElement("span");
       var deliveryAmount = document.createElement("span");
       deliveryLabel.textContent = "Antar jemput";
-      deliveryAmount.textContent = quote.freeDelivery ? "Gratis" : FreshFold.formatRupiah(quote.deliveryFee);
+      deliveryAmount.textContent = quote.freeDelivery ? "Gratis" : StarClean.formatRupiah(quote.deliveryFee);
       if (quote.freeDelivery) {
         deliveryLine.className = "is-free";
       }
@@ -247,11 +247,14 @@
       deliveryLine.appendChild(deliveryAmount);
       receiptLines.appendChild(deliveryLine);
 
-      receiptTotal.textContent = FreshFold.formatRupiah(quote.total);
+      receiptTotal.textContent = StarClean.formatRupiah(quote.total);
 
       var noteParts = [];
       if (quote.minimumApplied) {
         noteParts.push("Minimum " + quote.service.minLabel + " diberlakukan.");
+      }
+      if (quote.variantNote) {
+        noteParts.push(quote.variantNote);
       }
       noteParts.push(
         quote.freeDelivery
@@ -262,7 +265,7 @@
       if (liveRegion) {
         liveRegion.textContent =
           "Estimasi total " +
-          FreshFold.formatRupiah(quote.total) +
+          StarClean.formatRupiah(quote.total) +
           ", termasuk antar jemput.";
       }
       quantityHint.textContent = quote.minimumApplied
@@ -271,7 +274,7 @@
           ? "Berat akhir kami konfirmasi saat penjemputan."
           : "Jumlah item kami konfirmasi saat penjemputan.";
     } else {
-      receiptTotal.textContent = FreshFold.formatRupiah(0);
+      receiptTotal.textContent = StarClean.formatRupiah(0);
       receiptNote.textContent = "Masukkan jumlah untuk melihat estimasi.";
       quantityHint.textContent =
         quote.service.pricingType === "weight"
@@ -284,7 +287,7 @@
   }
 
   function continueToBooking() {
-    var quote = FreshFold.calculateQuote(readState());
+    var quote = StarClean.calculateQuote(readState());
     var quantity = Number(quantityInput.value);
 
     if (!Number.isFinite(quantity) || quantity <= 0) {
@@ -306,7 +309,7 @@
 
     setQuantityError("");
     document.dispatchEvent(
-      new CustomEvent("freshfold:prefill-booking", {
+      new CustomEvent("starclean:prefill-booking", {
         detail: {
           serviceId: quote.serviceId,
           variantId: quote.variantId,
@@ -325,7 +328,7 @@
       booking.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
     }
 
-    FreshFold.ui.showToast("Estimasi Anda telah ditambahkan ke formulir pemesanan.");
+    StarClean.ui.showToast("Estimasi Anda telah ditambahkan ke formulir pemesanan.");
   }
 
   serviceSelect.addEventListener("change", function () {
@@ -360,8 +363,8 @@
 
   resetButton.addEventListener("click", function () {
     form.reset();
-    reference = FreshFold.createReference("EST");
-    applyService(FreshFold.services[0].id, { preserveQuantity: false });
+    reference = StarClean.createReference("EST");
+    applyService(StarClean.services[0].id, { preserveQuantity: false });
     setQuantityError("");
     renderReceipt();
     serviceSelect.focus();
@@ -389,7 +392,7 @@
 
   populateServices();
   populateAddons();
-  applyService(FreshFold.services[0].id, { preserveQuantity: false });
+  applyService(StarClean.services[0].id, { preserveQuantity: false });
   quantityInput.value = "3";
   renderReceipt();
-})(window.FreshFold = window.FreshFold || {});
+})(window.StarClean = window.StarClean || {});

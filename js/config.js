@@ -1,16 +1,17 @@
-﻿(function (FreshFold) {
+﻿(function (StarClean) {
   "use strict";
 
-  FreshFold.config = {
-    brandName: "FreshFold Laundry",
-    whatsappNumber: "6281234567890",
-    whatsappDisplay: "+62 812-3456-7890",
-    email: "hello@freshfold.example",
-    instagramDisplay: "@freshfold.demo",
-    instagramUrl: "https://instagram.com/freshfold.demo",
-    addressLine1: "Jl. Melati Raya No. 12",
-    addressLine2: "Kebayoran Baru, Jakarta Selatan 12130",
-    addressQuery: "Jl. Melati Raya No. 12, Kebayoran Baru, Jakarta Selatan 12130",
+  StarClean.config = {
+    brandName: "Star Clean Laundry",
+    whatsappNumber: "62823398889",
+    whatsappDisplay: "0823398889",
+    email: "",
+    instagramDisplay: "",
+    instagramUrl: "",
+    addressLine1: "Perum BSA, Jl. Kemuning III No.10 Blok-G",
+    addressLine2: "Kothe, Kolor, Kec. Kota Sumenep, Kabupaten Sumenep, Jawa Timur 69417",
+    addressQuery: "Perum BSA, Jl. Kemuning III No.10 Blok-G, Kothe, Kolor, Kec. Kota Sumenep, Kabupaten Sumenep, Jawa Timur 69417",
+    mapUrl: "https://maps.app.goo.gl/BGqSJhHLjWtzR4FK6",
     hours: [
       { day: "Monday", label: "Senin", open: "08.00", close: "20.00", closed: false },
       { day: "Tuesday", label: "Selasa", open: "08.00", close: "20.00", closed: false },
@@ -40,23 +41,22 @@
       "Sore (17.00–20.00)"
     ],
     serviceAreas: [
-      { name: "Kebayoran Baru", available: true },
-      { name: "Cilandak", available: true },
-      { name: "Pasar Minggu", available: true },
-      { name: "Tebet", available: true },
-      { name: "Setiabudi", available: true },
-      { name: "Depok", available: false },
-      { name: "Bekasi", available: false },
-      { name: "Tangerang", available: false },
-      { name: "Bogor", available: false }
+      { name: "Kolor", available: true },
+      { name: "Kota Sumenep", available: true },
+      { name: "Batuan", available: false },
+      { name: "Lenteng", available: false },
+      { name: "Gapura", available: false },
+      { name: "Rubaru", available: false },
+      { name: "Ganding", available: false },
+      { name: "Manding", available: false }
     ],
-    draftKey: "freshfold.booking.draft.v1",
+    draftKey: "starclean.booking.draft.v1",
     draftTtlDays: 7,
     bookingWindowDays: 60,
     closedWeekdays: [0],
     maxInstructions: 500,
     messages: {
-      generic: "Halo FreshFold Laundry, saya ingin bertanya tentang layanan dan ketersediaan penjemputan."
+      generic: "Halo Star Clean Laundry, saya ingin bertanya tentang layanan dan ketersediaan penjemputan."
     }
   };
-})(window.FreshFold = window.FreshFold || {});
+})(window.StarClean = window.StarClean || {});

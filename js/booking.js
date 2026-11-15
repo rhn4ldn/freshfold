@@ -1,7 +1,7 @@
-(function (FreshFold) {
+(function (StarClean) {
   "use strict";
 
-  var config = FreshFold.config;
+  var config = StarClean.config;
   var form = document.getElementById("booking-form");
   if (!form) {
     return;
@@ -63,12 +63,12 @@
 
   function populateServices() {
     serviceSelect.textContent = "";
-    FreshFold.services.forEach(function (service) {
+    StarClean.services.forEach(function (service) {
       var prefix = service.showFrom ? "mulai " : "";
       serviceSelect.appendChild(
         makeOption(
           service.id,
-          service.name + " · " + prefix + FreshFold.formatRupiah(service.basePrice) + "/" + service.unit
+          service.name + " · " + prefix + StarClean.formatRupiah(service.basePrice) + "/" + service.unit
         )
       );
     });
@@ -76,7 +76,7 @@
 
   function populateAddons() {
     addonContainer.textContent = "";
-    FreshFold.addons.forEach(function (addon) {
+    StarClean.addons.forEach(function (addon) {
       var label = document.createElement("label");
       var input = document.createElement("input");
       var box = document.createElement("span");
@@ -97,7 +97,7 @@
       name.textContent = addon.name;
       description.textContent = addon.description;
       price.className = "check-option__price";
-      price.textContent = "+" + FreshFold.formatRupiah(addon.price);
+      price.textContent = "+" + StarClean.formatRupiah(addon.price);
 
       copy.appendChild(name);
       copy.appendChild(description);
@@ -119,7 +119,7 @@
 
     service.variants.forEach(function (variant) {
       variantSelect.appendChild(
-        makeOption(variant.id, variant.name + " · " + FreshFold.formatRupiah(variant.price))
+        makeOption(variant.id, variant.name + " · " + StarClean.formatVariantPrice(variant))
       );
     });
 
@@ -140,7 +140,7 @@
 
   function syncService(options) {
     var settings = options || {};
-    var service = FreshFold.getService(serviceSelect.value) || FreshFold.services[0];
+    var service = StarClean.getService(serviceSelect.value) || StarClean.services[0];
     serviceSelect.value = service.id;
     populateVariants(service, settings.variantId || variantSelect.value);
 
@@ -176,7 +176,7 @@
     }
     expressHint.textContent = service.expressEligible
       ? "Menambah 50% dan menargetkan 24 jam, tergantung kapasitas."
-      : "Express tidak tersedia untuk bedding dan item berat.";
+      : "Express tidak tersedia untuk item besar seperti bed cover dan boneka.";
   }
 
   function updateSameAddress() {
@@ -196,8 +196,8 @@
   }
 
   function updateSummary() {
-    var service = FreshFold.getService(serviceSelect.value) || FreshFold.services[0];
-    var quote = FreshFold.calculateQuote({
+    var service = StarClean.getService(serviceSelect.value) || StarClean.services[0];
+    var quote = StarClean.calculateQuote({
       serviceId: service.id,
       variantId: variantSelect.value,
       quantity: quantityInput.value,
@@ -222,13 +222,14 @@
     summaryDelivery.textContent = quote.validQuantity
       ? quote.freeDelivery
         ? "Gratis"
-        : FreshFold.formatRupiah(quote.deliveryFee)
+        : StarClean.formatRupiah(quote.deliveryFee)
       : "—";
-    summaryTotal.textContent = FreshFold.formatRupiah(quote.total);
+    summaryTotal.textContent = StarClean.formatRupiah(quote.total);
     summaryNote.textContent = quote.validQuantity
-      ? quote.minimumApplied
-        ? "Minimum " + service.minLabel + " diberlakukan. Harga akhir dikonfirmasi setelah penimbangan dan pemeriksaan."
-        : "Harga akhir dikonfirmasi setelah penimbangan dan pemeriksaan."
+      ? (quote.variantNote ? quote.variantNote + " " : "") +
+        (quote.minimumApplied
+          ? "Minimum " + service.minLabel + " diberlakukan. Harga akhir dikonfirmasi setelah penimbangan dan pemeriksaan."
+          : "Harga akhir dikonfirmasi setelah penimbangan dan pemeriksaan.")
       : "Tambahkan jumlah untuk melihat estimasi langsung.";
   }
 
@@ -294,7 +295,7 @@
       errors.push(id);
     }
 
-    var service = FreshFold.getService(serviceSelect.value);
+    var service = StarClean.getService(serviceSelect.value);
     var name = fullName.value.trim();
     var phone = normalizePhone(whatsapp.value);
     var emailValue = email.value.trim();
@@ -334,11 +335,11 @@
 
     if (!district.value) {
       fail("district", "Pilih kecamatan Anda.");
-    } else if (!FreshFold.isAreaAvailable(district.value)) {
+    } else if (!StarClean.isAreaAvailable(district.value)) {
       fail("district", "Penjemputan tidak tersedia di area tersebut.");
     }
 
-    var dateError = FreshFold.validatePickupDate(pickupDate.value);
+    var dateError = StarClean.validatePickupDate(pickupDate.value);
     if (dateError) {
       fail("pickup-date", dateError);
     }
@@ -378,12 +379,12 @@
   }
 
   function collectBooking() {
-    var service = FreshFold.getService(serviceSelect.value);
-    var variant = FreshFold.getVariant(service, variantSelect.value);
+    var service = StarClean.getService(serviceSelect.value);
+    var variant = StarClean.getVariant(service, variantSelect.value);
     var addonIds = selectedAddonIds();
     var quantity = Number(quantityInput.value);
     var express = Boolean(expressInput.checked && !expressInput.disabled && service.expressEligible);
-    var quote = FreshFold.calculateQuote({
+    var quote = StarClean.calculateQuote({
       serviceId: service.id,
       variantId: variant ? variant.id : "",
       quantity: quantity,
@@ -391,7 +392,7 @@
       addonIds: addonIds
     });
     var same = sameAddress.checked;
-    var reference = FreshFold.createReference("BK");
+    var reference = StarClean.createReference("BK");
     var booking = {
       reference: reference,
       fullName: fullName.value.trim(),
@@ -429,7 +430,7 @@
       : "Tidak ada";
 
     var lines = [
-      "Halo FreshFold Laundry, saya ingin melakukan pemesanan.",
+      "Halo Star Clean Laundry, saya ingin melakukan pemesanan.",
       "",
       "Referensi: " + booking.reference,
       "",
@@ -450,13 +451,20 @@
       "Pengerjaan: " + booking.quote.turnaroundLabel,
       "Tambahan: " + addonNames,
       "Estimasi: " +
-        FreshFold.formatRupiah(booking.quote.total) +
-        " (termasuk antar jemput; final dikonfirmasi setelah penimbangan)",
+        StarClean.formatRupiah(booking.quote.total) +
+        " (termasuk antar jemput; final dikonfirmasi setelah penimbangan)"
+    );
+
+    if (booking.quote.variantNote) {
+      lines.push("Catatan estimasi: " + booking.quote.variantNote);
+    }
+
+    lines.push(
       "",
       "PENJEMPUTAN",
       "Alamat: " + booking.pickupAddress,
       "Kecamatan: " + booking.district,
-      "Tanggal: " + FreshFold.formatDateID(booking.pickupDate),
+      "Tanggal: " + StarClean.formatDateID(booking.pickupDate),
       "Jadwal: " + booking.pickupSlot,
       "Pengantaran: " +
         (booking.sameAddress ? "Sama dengan alamat penjemputan" : booking.deliveryAddress),
@@ -488,7 +496,7 @@
   }
 
   function buildSummaryHTML(booking) {
-    var escape = FreshFold.escapeHTML;
+    var escape = StarClean.escapeHTML;
     var customerRows = [
       summaryRow("Nama", escape(booking.fullName)),
       summaryRow("WhatsApp", escape(booking.whatsapp))
@@ -518,7 +526,7 @@
     ];
 
     var pickupRows = [
-      summaryRow("Tanggal", escape(FreshFold.formatDateID(booking.pickupDate))),
+      summaryRow("Tanggal", escape(StarClean.formatDateID(booking.pickupDate))),
       summaryRow("Jendela waktu", escape(booking.pickupSlot)),
       summaryRow("Alamat", escape(booking.pickupAddress)),
       summaryRow("Kecamatan", escape(booking.district))
@@ -542,32 +550,36 @@
             booking.quote.quantityLabel +
             ")"
         ),
-        escape(FreshFold.formatRupiah(booking.quote.serviceSubtotal))
+        escape(StarClean.formatRupiah(booking.quote.serviceSubtotal))
       )
     ];
 
     if (booking.quote.expressApplied) {
       estimateRows.push(
-        summaryRow("Layanan Express (+50%)", escape(FreshFold.formatRupiah(booking.quote.expressFee)))
+        summaryRow("Layanan Express (+50%)", escape(StarClean.formatRupiah(booking.quote.expressFee)))
       );
     }
 
+    if (booking.quote.variantNote) {
+      estimateRows.push(summaryRow("Catatan", escape(booking.quote.variantNote)));
+    }
+
     booking.addonItems.forEach(function (addon) {
-      estimateRows.push(summaryRow(escape(addon.name), escape(FreshFold.formatRupiah(addon.price))));
+      estimateRows.push(summaryRow(escape(addon.name), escape(StarClean.formatRupiah(addon.price))));
     });
 
     estimateRows.push(
       summaryRow(
         "Antar jemput",
         escape(
-          booking.quote.freeDelivery ? "Gratis" : FreshFold.formatRupiah(booking.quote.deliveryFee)
+          booking.quote.freeDelivery ? "Gratis" : StarClean.formatRupiah(booking.quote.deliveryFee)
         )
       )
     );
 
     var estimateTotal =
       '<div class="summary-total"><span>Estimasi total</span><strong>' +
-      escape(FreshFold.formatRupiah(booking.quote.total)) +
+      escape(StarClean.formatRupiah(booking.quote.total)) +
       "</strong></div>";
 
     var noteHTML =
@@ -656,7 +668,7 @@
       draftStatus.textContent = "";
     }
     if (showMessage) {
-      FreshFold.ui.showToast("Draft pemesanan tersimpan dihapus.");
+      StarClean.ui.showToast("Draft pemesanan tersimpan dihapus.");
     }
   }
 
@@ -684,7 +696,7 @@
       return;
     }
 
-    var service = FreshFold.getService(draft.service);
+    var service = StarClean.getService(draft.service);
     if (service) {
       serviceSelect.value = service.id;
       syncService({ preserveQuantity: true, variantId: draft.variant });
@@ -719,8 +731,8 @@
       });
     }
 
-    if (FreshFold.validatePickupDate(pickupDate.value)) {
-      pickupDate.value = FreshFold.getSuggestedPickupDate();
+    if (StarClean.validatePickupDate(pickupDate.value)) {
+      pickupDate.value = StarClean.getSuggestedPickupDate();
     }
 
     updateSameAddress();
@@ -776,7 +788,7 @@
       return;
     }
 
-    var url = FreshFold.getWhatsAppUrl(currentBooking.message);
+    var url = StarClean.getWhatsAppUrl(currentBooking.message);
     var link = document.createElement("a");
     link.href = url;
     link.target = "_blank";
@@ -788,7 +800,7 @@
     clearDraft(false);
     currentBooking = null;
     closeDialog();
-    FreshFold.ui.showToast("WhatsApp telah dibuka dengan permintaan pemesanan Anda. Kami konfirmasi di sana.");
+    StarClean.ui.showToast("WhatsApp telah dibuka dengan permintaan pemesanan Anda. Kami konfirmasi di sana.");
   }
 
   populateServices();
@@ -796,10 +808,10 @@
   createVariantError();
 
   if (pickupDate) {
-    pickupDate.min = FreshFold.getMinPickupDate();
-    pickupDate.max = FreshFold.getMaxPickupDate();
+    pickupDate.min = StarClean.getMinPickupDate();
+    pickupDate.max = StarClean.getMaxPickupDate();
     if (!pickupDate.value) {
-      pickupDate.value = FreshFold.getSuggestedPickupDate();
+      pickupDate.value = StarClean.getSuggestedPickupDate();
     }
   }
 
@@ -817,7 +829,7 @@
     window.setTimeout(function () {
       clearAllErrors();
       syncService({ preserveQuantity: false });
-      pickupDate.value = FreshFold.getSuggestedPickupDate();
+      pickupDate.value = StarClean.getSuggestedPickupDate();
       updateSameAddress();
       updateInstructionsCount();
       updateSummary();
@@ -825,13 +837,13 @@
       if (formStatus) {
         formStatus.hidden = true;
       }
-      FreshFold.ui.showToast("Formulir pemesanan diatur ulang.");
+      StarClean.ui.showToast("Formulir pemesanan diatur ulang.");
     }, 0);
   });
 
-  document.addEventListener("freshfold:prefill-booking", function (event) {
+  document.addEventListener("starclean:prefill-booking", function (event) {
     var detail = event.detail || {};
-    var service = FreshFold.getService(detail.serviceId);
+    var service = StarClean.getService(detail.serviceId);
     if (!service) {
       return;
     }
@@ -855,7 +867,7 @@
     scheduleDraftSave();
   });
 
-  document.addEventListener("freshfold:clear-draft", function () {
+  document.addEventListener("starclean:clear-draft", function () {
     clearDraft(true);
   });
 
@@ -892,4 +904,4 @@
       currentBooking = null;
     });
   }
-})(window.FreshFold = window.FreshFold || {});
+})(window.StarClean = window.StarClean || {});
